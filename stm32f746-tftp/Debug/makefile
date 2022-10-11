@@ -17,6 +17,7 @@ RM := rm -rf
 -include Middlewares/Third_Party/LwIP/src/core/ipv6/subdir.mk
 -include Middlewares/Third_Party/LwIP/src/core/ipv4/subdir.mk
 -include Middlewares/Third_Party/LwIP/src/core/subdir.mk
+-include Middlewares/Third_Party/LwIP/src/apps/tftp/subdir.mk
 -include Middlewares/Third_Party/LwIP/src/apps/mqtt/subdir.mk
 -include Middlewares/Third_Party/LwIP/src/api/subdir.mk
 -include Middlewares/Third_Party/FreeRTOS/Source/portable/MemMang/subdir.mk
@@ -83,8 +84,8 @@ all: main-build
 main-build: stm32f746-tftp.elf secondary-outputs
 
 # Tool invocations
-stm32f746-tftp.elf stm32f746-tftp.map: $(OBJS) $(USER_OBJS) D:\project\STM\stm32f746-tftp\STM32F746NGHX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "stm32f746-tftp.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m7 -T"D:\project\STM\stm32f746-tftp\STM32F746NGHX_FLASH.ld" --specs=nosys.specs -Wl,-Map="stm32f746-tftp.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv5-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+stm32f746-tftp.elf stm32f746-tftp.map: $(OBJS) $(USER_OBJS) D:\project\STM\STM32F746G-DISCO-TFTP\stm32f746-tftp\STM32F746NGHX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "stm32f746-tftp.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m7 -T"D:\project\STM\STM32F746G-DISCO-TFTP\stm32f746-tftp\STM32F746NGHX_FLASH.ld" --specs=nosys.specs -Wl,-Map="stm32f746-tftp.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv5-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
