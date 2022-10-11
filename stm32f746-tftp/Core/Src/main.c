@@ -22,10 +22,6 @@
 #include "fatfs.h"
 #include "lwip.h"
 #include "usb_host.h"
-#include <stdio.h>
-#include <stdint.h>
-#include <stdarg.h>
-#include <string.h>
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -1155,17 +1151,6 @@ static void MX_TIM3_Init(void)
 
 }
 
-void printmsg(char *format,...) {
-    char str[80];
-
-    /*Extract the the argument list using VA apis */
-    va_list args;
-    va_start(args, format);
-    vsprintf(str, format,args);
-    HAL_UART_Transmit(&huart1,(uint8_t *)str, strlen(str),HAL_MAX_DELAY);
-    va_end(args);
-}
-
 /**
   * @brief TIM5 Initialization Function
   * @param None
@@ -1319,7 +1304,6 @@ static void MX_TIM12_Init(void)
   * @param None
   * @retval None
   */
-
 static void MX_USART1_UART_Init(void)
 {
 
@@ -1355,13 +1339,6 @@ static void MX_USART1_UART_Init(void)
   * @param None
   * @retval None
   */
-
-int _write(int fd, char * ptr, int len)
-{
-  HAL_UART_Transmit(&huart1, (uint8_t *) ptr, len, HAL_MAX_DELAY);
-  return len;
-}
-
 static void MX_USART6_UART_Init(void)
 {
 
@@ -1599,7 +1576,11 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
-
+int _write(int fd, char * ptr, int len)
+{
+  HAL_UART_Transmit(&huart1, (uint8_t *) ptr, len, HAL_MAX_DELAY);
+  return len;
+}
 /* USER CODE END 4 */
 
 /* USER CODE BEGIN Header_StartDefaultTask */
@@ -1623,8 +1604,7 @@ void StartDefaultTask(void const * argument)
     osMutexWait(myMutex01Handle, osWaitForever);
     printf("p1>\n\r");
     fflush(stdin);
-	uint8_t Test1[] = "TaskNumber1\n\r"; //Data to send
-	HAL_UART_Transmit(&huart1,Test1,sizeof(Test1),HAL_MAX_DELAY);
+
 	osMutexRelease(myMutex01Handle);
 	osDelay(1000);
   }
@@ -1647,8 +1627,6 @@ void StartTask02(void const * argument)
      osMutexWait(myMutex01Handle, osWaitForever);
      printf("p2>\n\r");
      fflush(stdin);
-	 uint8_t Test2[] = "TaskNumber2\n\r"; //Data to send
-	 HAL_UART_Transmit(&huart1,Test2,sizeof(Test2),HAL_MAX_DELAY);
 	 osMutexRelease(myMutex01Handle);
 	 osDelay(1000);
   }
