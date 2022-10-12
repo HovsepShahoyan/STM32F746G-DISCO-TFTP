@@ -25,7 +25,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "tftp_server.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -85,7 +85,7 @@ osThreadId defaultTaskHandle;
 osThreadId myTask02Handle;
 osMutexId myMutex01Handle;
 /* USER CODE BEGIN PV */
-
+void* fp  = "d";
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -116,6 +116,11 @@ static void MX_USART1_UART_Init(void);
 static void MX_USART6_UART_Init(void);
 void StartDefaultTask(void const * argument);
 void StartTask02(void const * argument);
+static void * tftp_open_file(const char* fname, u8_t is_write);
+void* aopen(const char* fname, const char* mode, u8_t write);
+void aclose(void* handle);
+int aread(void* handle, void* buf, int bytes);
+int awrite(void* handle, struct pbuf* p);
 
 /* USER CODE BEGIN PFP */
 void printmsg(char *format,...);
@@ -130,6 +135,13 @@ PUTCHAR_PROTOTYPE
   HAL_UART_Transmit(&huart1, (uint8_t *)&ch, 1, HAL_MAX_DELAY);
   return ch;
 }
+
+struct tftp_context ctx1 = {
+		.open = aopen,
+		.read = aread,
+		.write = awrite,
+		.close = aclose
+};
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -1581,6 +1593,51 @@ int _write(int fd, char * ptr, int len)
   HAL_UART_Transmit(&huart1, (uint8_t *) ptr, len, HAL_MAX_DELAY);
   return len;
 }
+
+static void * tftp_open_file(const char* fname, u8_t is_write)
+{
+  printf("%s \r\n",fname);
+  if (is_write) {
+    return (void*)fopen(fname, "wb");
+  } else {
+    return (void*)fopen(fname, "rb");
+  }
+}
+
+void* aopen(const char* fname, const char* mode, u8_t write)
+{
+	printf("TFTP open \r\n");
+	//uint8_t Test[] = "TFTP open\r\n"; //Data to send
+	//HAL_UART_Transmit(&huart1,Test,sizeof(Test),10);// Sending in normal mode
+	//LWIP_UNUSED_ARG(mode);
+	//tftp_open_file(fname, write);
+	return fp;
+}
+
+void aclose(void* handle) {
+	printf("TFTP close \r\n");
+	//uint8_t Test[] = "TFTP close\r\n"; //Data to send
+	//HAL_UART_Transmit(&huart1,Test,sizeof(Test),10);// Sending in normal mode
+}
+
+int aread(void* handle, void* buf, int bytes) {
+	printf("TFTP reads");
+	//uint8_t Test[] = "TFTP read!!!\r\n"; //Data to send
+	//HAL_UART_Transmit(&huart1,Test,sizeof(Test),10);// Sending in normal mode
+	return 1;
+}
+
+int awrite(void* handle, struct pbuf* p) {
+	printf("TFTP write  ");
+	//uint8_t Test[] = "TFTP write\r\n"; //Data to send
+	//HAL_UART_Transmit(&huart1,Test,sizeof(Test),10);// Sending in normal mode
+	int *temp = (int*)p->payload;
+	//HAL_UART_Transmit(&huart1, ( int*)p->tot_len, 16, 10);
+	//HAL_UART_Transmit(&huart1, temp, p->len, 10);
+	printf("%d", *temp);
+	printf("\r\n");
+	return 1;
+}
 /* USER CODE END 4 */
 
 /* USER CODE BEGIN Header_StartDefaultTask */
@@ -1598,11 +1655,12 @@ void StartDefaultTask(void const * argument)
   /* init code for LWIP */
   MX_LWIP_Init();
   /* USER CODE BEGIN 5 */
+  tftp_init(&ctx1);
   /* Infinite loop */
   for(;;)
   {
     osMutexWait(myMutex01Handle, osWaitForever);
-    printf("p1>\n\r");
+    //printf("p1>\n\r");
     fflush(stdin);
 
 	osMutexRelease(myMutex01Handle);
@@ -1625,7 +1683,7 @@ void StartTask02(void const * argument)
   for(;;)
   {
      osMutexWait(myMutex01Handle, osWaitForever);
-     printf("p2>\n\r");
+     //printf("p2>\n\r");
      fflush(stdin);
 	 osMutexRelease(myMutex01Handle);
 	 osDelay(1000);
