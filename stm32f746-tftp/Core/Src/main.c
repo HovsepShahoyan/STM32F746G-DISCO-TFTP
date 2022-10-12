@@ -86,6 +86,7 @@ osThreadId myTask02Handle;
 osMutexId myMutex01Handle;
 /* USER CODE BEGIN PV */
 void* fp  = "d";
+int check = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -1669,34 +1670,29 @@ static void * tftp_open_file(const char* fname, u8_t is_write)
 void* aopen(const char* fname, const char* mode, u8_t write)
 {
 	printf("TFTP open \r\n");
-	//uint8_t Test[] = "TFTP open\r\n"; //Data to send
-	//HAL_UART_Transmit(&huart1,Test,sizeof(Test),10);// Sending in normal mode
-	//LWIP_UNUSED_ARG(mode);
-	//tftp_open_file(fname, write);
 	return fp;
 }
 
 void aclose(void* handle) {
 	printf("TFTP close \r\n");
-	//uint8_t Test[] = "TFTP close\r\n"; //Data to send
-	//HAL_UART_Transmit(&huart1,Test,sizeof(Test),10);// Sending in normal mode
 }
 
 int aread(void* handle, void* buf, int bytes) {
 	printf("TFTP reads");
-	//uint8_t Test[] = "TFTP read!!!\r\n"; //Data to send
-	//HAL_UART_Transmit(&huart1,Test,sizeof(Test),10);// Sending in normal mode
 	return 1;
 }
 
 int awrite(void* handle, struct pbuf* p) {
-	printf("TFTP write  ");
+	printf("00000000 ");
 	u8_t* temp = (u8_t*)p->payload;
 	for(int i = 0; i < p->len; i++)
 	{
+	    if(i % 16 == 0 && i) {
+	    	printf("\r\n");
+	    	printf("%08x ", i);
+	    }
 	    printf("%02x ", *(temp+i));
 	}
-	//DumpHex(&temp, p->len);
 	printf("\r\n");
 	return 1;
 }
