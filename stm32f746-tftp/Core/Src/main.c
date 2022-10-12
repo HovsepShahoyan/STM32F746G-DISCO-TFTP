@@ -1588,6 +1588,68 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
+
+//void DumpHex(const void* data, size_t size) {
+//	char ascii[17];
+//	size_t i, j;
+//	ascii[16] = '\0';
+//	for (i = 0; i < size; ++i) {
+//		printf("%02X ", ((char*)data)[i]);
+//		if (((char*)data)[i] >= ' ' && ((unsigned char*)data)[i] <= '~') {
+//			ascii[i % 16] = ((char*)data)[i];
+//		} else {
+//			ascii[i % 16] = '.';
+//		}
+//		if ((i+1) % 8 == 0 || i+1 == size) {
+//			printf(" ");
+//			if ((i+1) % 16 == 0) {
+//				printf("|  %s "
+//						"\n\r", ascii);
+//			} else if (i+1 == size) {
+//				ascii[(i+1) % 16] = '\0';
+//				if ((i+1) % 16 <= 8) {
+//					printf(" ");
+//				}
+//				for (j = (i+1) % 16; j < 16; ++j) {
+//					printf("   ");
+//				}
+//				printf("|  %s \n\r", ascii);
+//			}
+//		}
+//	}
+//}
+
+//void hexDump (
+//    const char * desc,
+//    const void * addr,
+//    const int len,
+//    int perLine
+//) {
+//    if (perLine < 4 || perLine > 64) perLine = 16;
+//    int i;
+//    unsigned char buff[perLine+1];
+//    const unsigned char * pc = (const unsigned char *)addr;
+//
+//    for (i = 0; i < len; i++) {
+//
+//        if ((i % perLine) == 0) {
+//            if (i != 0) printf ("  %s\n\r", buff);
+//            printf ("  %04x ", i);
+//        }
+//        printf (" %02x", pc[i]);
+//        if ((pc[i] < 0x20) || (pc[i] > 0x7e))
+//            buff[i % perLine] = '.';
+//        else
+//            buff[i % perLine] = pc[i];
+//        buff[(i % perLine) + 1] = '\0';
+//    }
+//    while ((i % perLine) != 0) {
+//        printf ("   ");
+//        i++;
+//    }
+//    printf ("  %s\n\r", buff);
+//}
+
 int _write(int fd, char * ptr, int len)
 {
   HAL_UART_Transmit(&huart1, (uint8_t *) ptr, len, HAL_MAX_DELAY);
@@ -1629,12 +1691,12 @@ int aread(void* handle, void* buf, int bytes) {
 
 int awrite(void* handle, struct pbuf* p) {
 	printf("TFTP write  ");
-	//uint8_t Test[] = "TFTP write\r\n"; //Data to send
-	//HAL_UART_Transmit(&huart1,Test,sizeof(Test),10);// Sending in normal mode
-	int *temp = (int*)p->payload;
-	//HAL_UART_Transmit(&huart1, ( int*)p->tot_len, 16, 10);
-	//HAL_UART_Transmit(&huart1, temp, p->len, 10);
-	printf("%d", *temp);
+	u8_t* temp = (u8_t*)p->payload;
+	for(int i = 0; i < p->len; i++)
+	{
+	    printf("%02x ", *(temp+i));
+	}
+	//DumpHex(&temp, p->len);
 	printf("\r\n");
 	return 1;
 }
