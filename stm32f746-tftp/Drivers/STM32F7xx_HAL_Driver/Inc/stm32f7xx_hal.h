@@ -27,6 +27,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f7xx_hal_conf.h"
+#include "n25q128a.h"
 
 /** @addtogroup STM32F7xx_HAL_Driver
   * @{
@@ -187,6 +188,16 @@ HAL_StatusTypeDef HAL_DeInit(void);
 void HAL_MspInit(void);
 void HAL_MspDeInit(void);
 HAL_StatusTypeDef HAL_InitTick(uint32_t TickPriority);
+
+
+                                        // My code //
+uint8_t CSP_QUADSPI_Init(void);
+uint8_t CSP_QSPI_EraseSector(uint32_t EraseStartAddress, uint32_t EraseEndAddress);
+uint8_t CSP_QSPI_Write(uint8_t* buffer, uint32_t address, uint32_t buffer_size);
+uint8_t CSP_QSPI_Read(uint8_t* pData, uint32_t ReadAddr, uint32_t Size);
+uint8_t CSP_QSPI_Erase_Block(uint32_t BlockAddress);
+uint8_t CSP_QSPI_EnableMemoryMappedMode(void);
+uint8_t CSP_QSPI_Erase_Chip (void);
 /**
   * @}
   */
