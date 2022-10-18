@@ -30,8 +30,7 @@
 #include "n25q128a.h"
 #include "string.h"
 #include "stdio.h"
-/* USER CODE END I
- * ncludes */
+/* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
@@ -219,9 +218,9 @@ int main(void)
   /* USER CODE BEGIN 2 */
 
   CSP_QSPI_Erase_Chip();
-  sprintf(buf, "%u", number);
+  sprintf(buf, "%d", number);
   CSP_QSPI_Write(buf, 0, strlen(buf));
-  CSP_QSPI_Read(readbuf, 0, 100);
+  CSP_QSPI_Read(readbuf, 0, 5);
 
   /* USER CODE END 2 */
 
@@ -2318,7 +2317,7 @@ void StartDefaultTask(void const * argument)
     osMutexWait(myMutex01Handle, osWaitForever);
     //printf("p1>\n\r");
     for(int i = 0; i < 5; ++i) {
-    	printf("%d \r\n", readbuf[i]);
+    	printf("%x \r\n", readbuf[i]);
     }
     fflush(stdin);
 
